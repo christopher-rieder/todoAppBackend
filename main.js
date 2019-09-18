@@ -3,10 +3,25 @@ const compression = require('compression');
 const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
+const dotenv = require('dotenv');
 const mongoSanitize = require('express-mongo-sanitize');
 const dateFormat = require('date-fns/format');
 const DATE_FORMAT_STRING = 'YYYY/MM/DD';
 const todoRouter = require('./routes/todoRoutes');
+
+const mongoose = require('mongoose');
+
+dotenv.config({path: './.env'});
+
+mongoose.connect(process.env.DATABASE, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true
+
+}).then(connection => {
+  console.log('Connected to MongoDB!');
+}).catch(console.error);
 
 const app = express();
 app.use(compression());
