@@ -6,6 +6,9 @@ router.route('/')
   .get(getAllTodos)
   .post(addTodo);
 
+router.route('/reset')
+  .patch(resetTodosStatus);
+
 router.route('/:id')
   .get(getTodosById)
   .patch(updateTodo);
@@ -41,6 +44,17 @@ function addTodo (req, res) {
 
 function updateTodo (req, res) {
   Note.findByIdAndUpdate(req.params.id, req.body, (error, result) => {
+    if (error) {
+      res.status(400).send(error);
+    }
+    res.status(200).json(result);
+  });
+}
+
+// this function will put all of the existing notes on 'To Do' status
+// for dev/testing purposes
+function resetTodosStatus (req, res) {
+  Note.updateMany({}, {status: 'To Do'}, (error, result) => {
     if (error) {
       res.status(400).send(error);
     }
